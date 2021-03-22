@@ -56,6 +56,6 @@ App.plugin(require('koishi-plugin-shell'), {
   option_cwd: '指定执行的工作路径',
   on_start: '[执行指令] {{ cmd }}\n限时：{{ timeout }} 秒',
   on_close:
-    '[执行完毕] {{ cmd }}\b耗时：{{ time }} 秒\n退出码：{{ code }}，终止信号：{{ signal }}',
+    '[执行完毕] {{ cmd }}\n耗时：{{ time }} 秒\n退出码：{{ code }}，终止信号：{{ signal }}',
 }
 ```

@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-shell",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Run shell commands with koishi",
   "main": "index.js",
   "repository": "https://github.com/koishijs/koishi-plugin-shell.git",
