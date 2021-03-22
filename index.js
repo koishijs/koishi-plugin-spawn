@@ -19,14 +19,14 @@ template.set('shell', {
 })
 
 function apply(koishi, pOptions) {
-  const defaultOpt = {
+  pOptions = {
     encoding: 'utf-8',
     shell: undefined,
     defaultTimeout: 30,
     maxTimeout: 180,
     minTimeout: 10,
+    ...pOptions,
   }
-  pOptions = Object.assign({}, defaultOpt, pOptions)
 
   koishi
     .command('admin/sh <cmd:text>', template('shell.desc'), { authority: 4 })
@@ -49,7 +49,7 @@ function apply(koishi, pOptions) {
       }
 
       await session.send(
-        interpolate(template('shell.on_start', { cmd, timeout }))
+        interpolate(template('shell.on_start'), { cmd, timeout })
       )
 
       return new Promise((resolve) => {
@@ -69,14 +69,12 @@ function apply(koishi, pOptions) {
         })
         child.on('close', (code, signal) => {
           session.sendQueued(
-            interpolate(
-              template('shell.on_close', {
-                cmd,
-                time: ((Date.now() - start) / 1000).toFixed(2),
-                code,
-                signal,
-              })
-            ),
+            interpolate(template('shell.on_close'), {
+              cmd,
+              time: ((Date.now() - start) / 1000).toFixed(2),
+              code,
+              signal,
+            }),
             500
           )
           resolve()
