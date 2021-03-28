@@ -62,10 +62,10 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-koishi-utils@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.npmjs.org/koishi-utils/-/koishi-utils-4.0.3.tgz#ac04f00b99a2ae73c1df3a39a9c9cb73d40fda23"
-  integrity sha512-1OtUViGJU0SaWmvRlJKa8mkislzAJitULhHq5UOF8LKuWxY3OfglmSASGeQfm8vMdSdsM5CcrSPEZdcvpjBjlQ==
+koishi-utils@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.npmjs.org/koishi-utils/-/koishi-utils-4.1.1.tgz#88ffbab60885c6ba5f5ece37dc821fe5d202b60c"
+  integrity sha512-Z5eKlnCg4YX8CEmx2vhoUzNR1Emy1KPbb0a2sqy6A4iiKMXqy7BZcfWVrmW64vSIxDVATaEfIzRV45nZKEqYGA==
   dependencies:
     supports-color "^8.1.1"
 

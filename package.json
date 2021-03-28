@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-shell",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Run shell commands with koishi",
   "main": "index.js",
   "repository": "https://github.com/koishijs/koishi-plugin-shell.git",
@@ -10,9 +10,10 @@
     "bump": "bump"
   },
   "devDependencies": {
-    "@dragon-fish/bump": "^0.0.13"
+    "@dragon-fish/bump": "^0.0.13",
+    "koishi-utils": "^4.1.1"
   },
-  "dependencies": {
-    "koishi-utils": "^4.0.3"
+  "peerDependencies": {
+    "koishi-utils": "^4.1.1"
   }
 }
