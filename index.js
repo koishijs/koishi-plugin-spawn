@@ -6,7 +6,7 @@
  */
 
 const { exec } = require('child_process')
-const { template, interpolate } = require('koishi-utils')
+const { template, Context } = require('koishi-core')
 
 template.set('shell', {
   desc: '执行shell命令',
@@ -18,7 +18,11 @@ template.set('shell', {
     '[执行完毕] {{ cmd }}\n耗时：{{ time }} 秒\n退出码：{{ code }}，终止信号：{{ signal }}',
 })
 
-function apply(koishi, pOptions) {
+/**
+ *
+ * @param {Context} ctx
+ */
+function apply(ctx, pOptions) {
   pOptions = {
     encoding: 'utf-8',
     shell: undefined,
@@ -28,11 +32,11 @@ function apply(koishi, pOptions) {
     ...pOptions,
   }
 
-  koishi
+  ctx
     .command('admin/sh <cmd:text>', template('shell.desc'), { authority: 4 })
     .option(
       'timeout',
-      `-t <s:number> ${interpolate(template('shell.option_timeout'), {
+      `-t <s:number> ${template('shell.option_timeout', {
         minTimeout: pOptions.minTimeout,
         maxTimeout: pOptions.maxTimeout,
       })}`
@@ -48,9 +52,7 @@ function apply(koishi, pOptions) {
         timeout = Math.max(pOptions.minTimeout, timeout)
       }
 
-      await session.send(
-        interpolate(template('shell.on_start'), { cmd, timeout })
-      )
+      await session.send(template('shell.on_start', { cmd, timeout }))
 
       return new Promise((resolve) => {
         const start = Date.now()
@@ -69,7 +71,7 @@ function apply(koishi, pOptions) {
         })
         child.on('close', (code, signal) => {
           session.sendQueued(
-            interpolate(template('shell.on_close'), {
+            template('shell.on_close', {
               cmd,
               time: ((Date.now() - start) / 1000).toFixed(2),
               code,
