@@ -14,9 +14,9 @@ export interface Config {
 
 export const Config: Schema<Config> = Schema.object({
   root: Schema.string().description('工作路径。').default(''),
-  shell: Schema.string().description('运行指令的程序。'),
+  shell: Schema.string().description('运行命令的程序。'),
   encoding: Schema.union(encodings).description('输出内容编码。').default('utf8'),
-  timeout: Schema.number().description('超时时间。').default(Time.minute),
+  timeout: Schema.number().description('最长运行时间。').default(Time.minute),
 })
 
 export interface State {

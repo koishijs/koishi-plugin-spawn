@@ -30,6 +30,12 @@
     "process",
     "shell"
   ],
+  "koishi": {
+    "description": {
+      "en": "Run shell commands with Koishi",
+      "zh": "使用 Koishi 运行终端命令"
+    }
+  },
   "scripts": {
     "build": "atsc -b",
     "docs:dev": "vitepress dev docs --open",

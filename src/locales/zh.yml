@@ -2,8 +2,8 @@ commands:
   exec:
     description: 执行命令
     messages:
-      expect-input: 请输入要执行的命令。
-      started: '[开始执行] {command}'
+      expect-input: 请输入要运行的命令。
+      started: '[运行开始] {command}'
       finished: |-
-        [执行完毕] {command}
+        [运行完毕] {command}
         {output}

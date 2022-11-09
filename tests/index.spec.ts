@@ -14,8 +14,8 @@ describe('koishi-plugin-spawn', () => {
 
   it('basic support', async () => {
     await client.shouldReply('exec echo hello', [
-      '[开始执行] echo hello',
-      '[执行完毕] echo hello\nhello',
+      '[运行开始] echo hello',
+      '[运行完毕] echo hello\nhello',
     ])
   })
 })
