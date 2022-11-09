@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "lib",
+    "rootDir": "src",
+    "target": "es2020",
+    "module": "commonjs",
+    "declaration": true,
+    "composite": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "strictBindCallApply": true,
+    "paths": {
+      "koishi-plugin-spawn": ["src"],
+    },
+    "types": [
+      "yml-register/types",
+    ],
+  },
+  "include": [
+    "src",
+  ],
+}
