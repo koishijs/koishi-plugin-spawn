@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-spawn",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Run shell commands with Koishi",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

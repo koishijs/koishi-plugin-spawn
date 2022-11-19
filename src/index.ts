@@ -1,6 +1,5 @@
 import { exec } from 'child_process'
 import { Context, Schema, Time } from 'koishi'
-import zh from './locales/zh.yml'
 import path from 'path'
 
 const encodings = ['utf8', 'utf16le', 'latin1', 'ucs2'] as const
@@ -31,7 +30,7 @@ export interface State {
 export const name = 'spawn'
 
 export function apply(ctx: Context, config: Config) {
-  ctx.i18n.define('zh', zh)
+  ctx.i18n.define('zh', require('./locales/zh'))
 
   ctx.command('exec <command:text>')
     .action(async ({ session }, command) => {

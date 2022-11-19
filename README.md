@@ -7,7 +7,7 @@
 
 ## 文档
 
-- 使用方法、参数配置请见：https://spawn.koishi.chat
+使用方法、参数配置请见：<https://spawn.koishi.chat>
 
 ## 许可证
 
