@@ -1,5 +1,5 @@
 import { exec } from 'child_process'
-import { Context, Schema, Time } from 'koishi'
+import { Context, h, Schema, Time } from 'koishi'
 import path from 'path'
 
 const encodings = ['utf8', 'utf16le', 'latin1', 'ucs2'] as const
@@ -36,6 +36,7 @@ export function apply(ctx: Context, config: Config) {
     .action(async ({ session }, command) => {
       if (!command) return session.text('.expect-text')
 
+      command = h('', h.parse(command)).toString(true)
       const { timeout } = config
       const state: State = { command, timeout, output: '' }
       await session.send(session.text('.started', state))
