@@ -1,9 +1,11 @@
 commands:
-  exec:
+  spawn:
     description: 执行命令
     messages:
       expect-input: 请输入要运行的命令。
-      started: '[运行开始] {command}'
+      started: '[SPAWN] $ {command}'
       finished: |-
-        [运行完毕] {command}
-        {output}
+        [SPAWN] 命令执行完毕
+        耗时 {timeUsed}s
+        退出码 {code}
+        终止信号 {signal}
