@@ -1,18 +1,19 @@
-import { exec } from 'child_process'
-import { Context, h, Schema, Time } from 'koishi'
+import { exec, ExecOptions } from 'child_process'
+import { Context, h, Schema, Service, Time } from 'koishi'
 import path from 'path'
 
 const encodings = ['utf8', 'utf16le', 'latin1', 'ucs2'] as const
 
-export interface Config {
-  root?: string
-  shell?: string
-  encoding?: typeof encodings[number]
-  timeout?: number
+declare module 'koishi' {
+  export interface Context {
+    shell: ShellService
+  }
 }
 
+export interface Config extends ExecOptions {}
+
 export const Config: Schema<Config> = Schema.object({
-  root: Schema.string().description('工作路径。').default(''),
+  root: Schema.string().description('工作路径。'),
   shell: Schema.string().description('运行命令的程序。'),
   encoding: Schema.union(encodings).description('输出内容编码。').default('utf8'),
   timeout: Schema.number().description('最长运行时间。').default(Time.minute),
@@ -20,49 +21,79 @@ export const Config: Schema<Config> = Schema.object({
 
 export interface State {
   command: string
-  timeout: number
   output: string
   code?: number
   signal?: NodeJS.Signals
-  timeUsed?: number
+  timeUsed?: string
 }
 
-export const name = 'spawn'
-
-export function apply(ctx: Context, config: Config) {
-  ctx.i18n.define('zh', require('./locales/zh'))
-
-  ctx.command('exec <command:text>')
-    .action(async ({ session }, command) => {
-      if (!command) return session.text('.expect-text')
-
-      command = h('', h.parse(command)).toString(true)
-      const { timeout } = config
-      const state: State = { command, timeout, output: '' }
-      await session.send(session.text('.started', state))
-
-      return new Promise((resolve) => {
-        const start = Date.now()
-        const child = exec(command, {
-          timeout,
-          cwd: path.resolve(ctx.baseDir, config.root),
-          encoding: config.encoding,
-          shell: config.shell,
-          windowsHide: true,
-        })
-        child.stdout.on('data', (data) => {
-          state.output += data.toString()
-        })
-        child.stderr.on('data', (data) => {
-          state.output += data.toString()
-        })
-        child.on('close', (code, signal) => {
-          state.code = code
-          state.signal = signal
-          state.timeUsed = Date.now() - start
-          state.output = state.output.trim()
-          resolve(session.text('.finished', state))
-        })
+export class ShellService extends Service {
+  constructor(public ctx: Context) {
+    super(ctx, 'shell')
+  }
+  makeProcess(cmd: string, options?: ExecOptions) {
+    return exec(cmd, {
+      cwd: this.ctx.baseDir,
+      windowsHide: true,
+      encoding: 'utf-8',
+      timeout: 1 * Time.minute,
+      ...options,
+    })
+  }
+  exec(
+    cmd: string,
+    onStdout?: (data: string) => void,
+    options?: ExecOptions
+  ): Promise<{ code: number; signal: NodeJS.Signals; output: string }> {
+    return new Promise((resolve, reject) => {
+      const process = this.makeProcess(cmd, options)
+      let output = ''
+      process.stdout?.on('data', (data) => {
+        output += data
+        onStdout?.(data)
+      })
+      process.on('exit', (code, signal) => {
+        ;(code === 0 ? resolve : reject)({ code, signal, output })
       })
     })
+  }
+}
+
+export default class PluginSpawn {
+  readonly name = 'spawn'
+
+  constructor(ctx: Context, options?: ExecOptions) {
+    ctx.plugin(ShellService)
+    ctx.i18n.define('zh', require('./locales/zh'))
+
+    ctx
+      .command('admin/spawn <command:text>', '执行终端命令', { authority: 4 })
+      .alias('sh', 'exec')
+      .action(async ({ session }, command) => {
+        if (!command) return session?.execute('spawn -h')
+        
+        const state: State = {
+          command,
+          timeUsed: '',
+          code: 0,
+          signal: undefined!,
+          output: '',
+        }
+        await session.send(session.text('.started', state))
+
+        const startTime = Date.now()
+        const res = await ctx.shell.exec(
+          command,
+          (data) => {
+            state.output += data
+            session?.sendQueued(data)
+          },
+          options
+        )
+        state.code = res.code
+        state.signal = res.signal
+        state.timeUsed = `${((Date.now() - startTime) / 1000).toFixed(2)}s`
+        return session.text('.finished', state)
+      })
+  }
 }

@@ -1,6 +1,6 @@
 import { Context } from 'koishi'
 import mock from '@koishijs/plugin-mock'
-import * as spawn from '../src'
+import spawn from '../src'
 
 const ctx = new Context()
 ctx.plugin(mock)
@@ -13,9 +13,10 @@ describe('koishi-plugin-spawn', () => {
   after(() => ctx.stop())
 
   it('basic support', async () => {
-    await client.shouldReply('exec echo hello', [
-      '[运行开始] echo hello',
-      '[运行完毕] echo hello\nhello',
+    await client.shouldReply('spawn echo hello', [
+      '[SPAWN] $ echo hello',
+      'hello',
+      /^\[SPAWN\] 命令执行完毕/,
     ])
   })
 })
